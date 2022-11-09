@@ -21,8 +21,8 @@
   "homepage": "https://github.com/Vallejo1194/challenge-12#readme",
   "dependencies": {
     "console.table": "^0.10.0",
-    "express": "^4.17.1",
+    "dotenv": "^16.0.3",
     "inquirer": "^8.2.4",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.3.3"
   }
 }
