@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const app = require('./index')
 
-
+// conection to mysql 
 const db = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -92,6 +92,7 @@ switch (option) {
         });
     }
 
+    // add function 
 const add = (option) => {
 
     let query = ''
@@ -204,6 +205,10 @@ const add = (option) => {
     }
 
 }
+
+// update function 
+
+
 const update = (option) => {
     let query = ''
     console.log(`Add Function, you selected ${option}`)
@@ -291,6 +296,9 @@ const update = (option) => {
             
     }
 }
+
+// delete function 
+
 
 const deleteOption = (option) => {
     let query = ''
@@ -382,6 +390,8 @@ const deleteOption = (option) => {
                 break;
         }
     }
+    
+    // modules being export 
     
     module.exports = {
         showInfo: showInfo,

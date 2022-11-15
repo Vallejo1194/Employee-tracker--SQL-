@@ -34,6 +34,8 @@ const firstMenu = () => {
 };
 
 
+
+
 // Menu 
 
 const displayMenu = () => {
@@ -50,7 +52,7 @@ const displayMenu = () => {
                    '<< Go Back']
     })
     .then((answer) => {
-        if (answer.viewMenu === '<< Go Back'){return principalMenu();}
+        if (answer.viewMenu === '<< Go Back'){return firstMenu();}
         db.showInfo(answer.viewMenu)
     });
 }
@@ -71,6 +73,8 @@ choices: ['Department', 'Role', 'Employee', '<= return']
 
 }
 
+
+
 // update 
 
 const update = () => {
@@ -81,7 +85,7 @@ const update = () => {
         choices: ['Update an Employee Role', 'Update an Employee Manager', '<< Go Back']
     })
     .then((answer) => {
-        if (answer.updateTable === '<< Go Back'){return principalMenu();}
+        if (answer.updateTable === '<< Go Back'){return firstMenu();}
         db.update(answer.updateTable)
     });
 };
@@ -103,6 +107,8 @@ choices: ['Delete a department', 'Delete a role', 'Delete an Employee', '<= retu
 
 }
 
+// calling the menu 
+
 firstMenu(); 
+
 module.exports.firstMenu = firstMenu;
-//module.exports = firstMenu();
