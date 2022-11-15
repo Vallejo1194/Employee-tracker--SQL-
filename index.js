@@ -1,64 +1,58 @@
 const inquirer = require('inquirer');
-const db = require('./database');
+const db = require('./database')
 
-// Menu 
-
+// Display principal menu
 const firstMenu = () => {
-inquirer.prompt({
-    type: 'list',
-    name: 'principalMenu',
-    message: 'How would you like to proceed ?',
-    choices: ['View', 'Add', 'Update', 'Delete', 'Exit']
-})
-.then((answer) => {
-    switch (answer.principalMenu) {
-        //View
-        case 'View':
-            displayMenu();
-            break;
-
-        //Add 
-        case 'Add':
-            add();
-            break;
-
-        // Update
-
-        case 'Update':
-            update();
-            break;
-
-        case 'Delete':
-            deleteDatabase();
-            break;
-
+    inquirer.prompt({
+        type: 'list',
+        name: 'principalMenu',
+        message: 'What would you like to do?',
+        choices: ['View', 'Add', 'Update', 'Delete', 'Exit']
+    })
+    .then((answer) => {
+        switch(answer.principalMenu) {
+            // View option
+            case 'View':
+                displayMenu();
+                break;
+            // Add option
+            case 'Add':
+                add();
+                break;
+            // Update option
+            case 'Update':
+                update();
+                break;
+            // Delete option
+            case 'Delete':
+                deleteDatabase();
+                break;
             default:
                 process.exit();
-    }
-});
-
+        }
+    });
 };
+
 
 // Menu 
 
 const displayMenu = () => {
-inquirer.prompt ({
-    type: 'list',
-    name: 'showMenu',
-    message: 'showing',
-    choices: [
-        "All Departments",
-        "All Roles",
-        "Employee by Department",
-        "employee by Manager",
-        "Budget of department", 
-        "<= return"]
-})
-.then ((answer) => {
-    if (answer.displayMenu === "<= return") { return firstMenu();}
-    db.showInfo(answer.displayMenu)
-});
-
+    inquirer.prompt({
+        type: 'list',
+        name: 'viewMenu',
+        message: 'Viewing',
+        choices: ['All Departments', 
+                  'All Roles', 
+                  'All Employees',
+                  'Employees by Department',
+                  'Employees by Manager',
+                  'Budget of a Department',
+                   '<< Go Back']
+    })
+    .then((answer) => {
+        if (answer.viewMenu === '<< Go Back'){return principalMenu();}
+        db.showInfo(answer.viewMenu)
+    });
 }
 
 // add 
@@ -71,11 +65,27 @@ message: 'showing',
 choices: ['Department', 'Role', 'Employee', '<= return']
     })
     .then ((answer) => {
-        if (answer.displayMenu === "<= return") { return firstMenu();}
-        db.update(answer.updateTable)
+        if (answer.addtodatabase === "<= return") { return firstMenu();}
+        db.add(answer.addtodatabase)
     });
 
 }
+
+// update 
+
+const update = () => {
+    inquirer.prompt({
+        type: 'list',
+        name: 'updateTable',
+        message: 'viewing',
+        choices: ['Update an Employee Role', 'Update an Employee Manager', '<< Go Back']
+    })
+    .then((answer) => {
+        if (answer.updateTable === '<< Go Back'){return principalMenu();}
+        db.update(answer.updateTable)
+    });
+};
+
 
 // delete 
 
@@ -87,13 +97,12 @@ message: 'showing',
 choices: ['Delete a department', 'Delete a role', 'Delete an Employee', '<= return']
     })
     .then ((answer) => {
-        if (answer.displayMenu === "<= return") { return firstMenu();}
-        db.deleteOption(answer.deleteOption)
+        if (answer.delete === "<= return") { return firstMenu();}
+        db.deleteOption(answer.delete)
     });
 
 }
 
-// start inquirer
-
-
-module.exports = firstMenu();
+firstMenu(); 
+module.exports.firstMenu = firstMenu;
+//module.exports = firstMenu();

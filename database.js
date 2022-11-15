@@ -6,6 +6,7 @@ require('dotenv').config();
 
 const app = require('./index')
 
+
 const db = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -17,12 +18,9 @@ const db = mysql.createConnection({
 )
 
 db.connect(err => {
-
     if (err) {
         console.log(err)
-        throw err
-    };
-
+        throw err};
 });
 
 // get data 
@@ -31,77 +29,72 @@ const showInfo = (option) => {
 let query = '';
 console.log(`Find the option you selected ${option}`)
 switch (option) {
-    case 'All deparments':
-        query = `SELECT id AS Id,
-        name as Department
-        FROM department;`;
+    case 'All Departments':
+        query = `SELECT id as Id, 
+                name as Department 
+                FROM department;`
         break;
 
-    case 'All Roles':
-        query`SELECT roles.id AS Id,
-            roles.title AS Role,
-            roles.salary AS Salary,
-            department.name AS Department 
-            FROM roles 
-            JOIN department ON roles.deparment;`;
-        break;
-
-    case 'All Employees':
-        query = `SELECT roles.id AS Id,
-CONCAT(employee.first_name, ' ', employee.last_name) AS Name,
-department.name AS department,
-roles.salary AS Salary,
-IF(employee.manager_id IS NULL, 'Manager not Found', CONCAT(employee2.first_name, ' ', employee2.last_name)) AS Manager
-FROM employee
-JOIN roles ON employee.role_id = roles.id
-JOIN department ON roles.department_id = department.id
-LEFT JOIN employee employee2 ON employee.manager_id = employee2.id;`;
-
-            break;
-
-        case 'Employees by Department':
-            query = `SELECT employee.id AS Id,
-                     CONCAT(employee.first_name, ' ', employee.last_name) AS 'Employee Name',
+        case 'All Roles':
+            query = `SELECT roles.id AS Id,
+                     roles.title AS Role,
+                     roles.salary AS Salary,
                      department.name AS Department
+                     FROM roles
+                     JOIN department ON roles.department_id = department.id;`;
+            break;
+
+       case 'All Employees':
+            query = `SELECT roles.id AS Id,
+                     CONCAT(employee.first_name, ' ', employee.last_name) AS Name,
+                     roles.title AS Role,
+                     department.name AS Department,
+                     roles.salary AS Salary,
+                     IF(employee.manager_id IS NULL, 'Does not have a manager', CONCAT(employee2.first_name, ' ', employee2.last_name)) AS Manager
                      FROM employee
-                     JOIN roles
-                     JOIN department ON employee.role_id = roles.id AND roles.department_id = department.id ORDER BY department.id;`;
-            break;
+                     JOIN roles ON employee.role_id = roles.id
+                     JOIN department ON roles.department_id = department.id
+                     LEFT JOIN employee employee2 ON employee.manager_id = employee2.id;`;
+            break; 
 
+            case 'Employees by Department':
+                query = `SELECT employee.id AS Id,
+                         CONCAT(employee.first_name, ' ', employee.last_name) AS 'Employee Name',
+                         department.name AS Department
+                         FROM employee
+                         JOIN roles
+                         JOIN department ON employee.role_id = roles.id AND roles.department_id = department.id ORDER BY department.id;`;
+                break;
+            case 'Employees by Manager':
+                query = `SELECT employee1.id AS Id,
+                         CONCAT(employee1.first_name, ' ', employee1.last_name) AS EmployeeName,
+                         IF(employee1.manager_id IS NULL, 'They are bound to no one', CONCAT(employee2.first_name, ' ', employee2.last_name)) AS Manager
+                         FROM employee employee1
+                         LEFT JOIN employee employee2 ON employee1.manager_id = employee2.id ORDER BY employee2.id;`;
+                break;
+            case 'Budget of a Department' :
+                query = `SELECT department.id AS Id,
+                         department.name AS Department,
+                         SUM(roles.salary) AS Budget
+                         FROM employee
+                         JOIN roles
+                         JOIN department ON employee.role_id = roles.id AND roles.department_id = department.id
+                         GROUP BY department.id;`;
+                break;     
+        }
 
-        case 'Employees by Manager':
-            query = `SELECT employee1.id AS Id,
-CONCAT(employee1.first_name, ' ', employee1.last_name) AS EmployeeName,
-IF(employee1.manager_id IS NULL, 'No manager Bound', CONCAT(employee2.first_name, ' ', employee2.last_name)) AS Manager
-FROM employee employee1
-JOIN roles
-LEFT JOIN employee employee2 ON employee1.manager_id = employee2.id ORDER BY employee2.id;`;
-            break;
-
-        case 'Budget of Department':
-            query = `SELECT deparment.id AS Id,
-    department.name AS Department,
-    SUM(roles.salary) AS Budget
-    FROM employee
-    JOIN roles
-    JOIN department ON employee.role_id = roles.id AND roles.department_id = department.id
-    GROUP BY department.id;`;
-            break;
+        db.query(query, (err, results) => {
+            if (err) {console.log(err); return app.firstMenu();}
+            // If everything goes well, print this
+            console.table(results);
+            console.log('back to the menu')
+            return app.firstMenu();
+        });
     }
-    db.query(query, (err, results) => {
-        if (err) console.log(err)
-        //checking if this works
-        console.table(results);
-        console.log('Back to principal menu')
-        return app.firstMenu();
-        
-    });
-
-}
 
 const add = (option) => {
 
-    let query = '';
+    let query = ''
     console.log(`You Selected ${option} the Add function `)
 
     switch (option) {
@@ -376,7 +369,7 @@ const deleteOption = (option) => {
                     db.query(query, function (err, results) {
                         if (err) throw err;
                         console.table('Eployee deleted succesfully')
-                        return app.principalMenu();
+                        return app.firstMenu();
                       
                         });
                   
